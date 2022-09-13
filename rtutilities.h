@@ -43,4 +43,5 @@ inline double clamp(double x, double min, double max){
 #include "vec3.h"
 #include "hittable.h"
 
+
 #endif

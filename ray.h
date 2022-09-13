@@ -23,6 +23,10 @@ class ray{
             return orig + t*dir;
         }
 
+        
+
 };
+
+    
 
 #endif
