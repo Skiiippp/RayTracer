@@ -147,9 +147,7 @@ void render(int imageWidth, int imageHeight, int maxDepth, camera& cam, hittable
             ray r = cam.getRay(u, v);
             color pixelColor = rayColor(r, world, maxDepth);
             image[j * imageWidth + i] += pixelColor;
-        }
-
-            
+        } 
     }
 }
 
