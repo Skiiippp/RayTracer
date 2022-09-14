@@ -6,6 +6,7 @@
 #include <limits>
 #include <memory>
 #include <cstdlib>
+#include <random>
 
 //Usings
 using std::shared_ptr;
@@ -22,7 +23,10 @@ inline double degToRad(double degrees){
 }
 
 inline double randomDouble(){
-    return rand() / (RAND_MAX + 1.0);
+    thread_local static std::random_device rd;
+    thread_local static std::mt19937 rng(rd());
+    thread_local std::uniform_real_distribution<float> urd;
+    return urd(rng, decltype(urd)::param_type{0, 1});
 }
 
 inline double randomDouble(double min, double max){
