@@ -4,7 +4,7 @@ New(ish) features:
 - Multithreading
 - 3D mesh support using a custom .obj file interpreter
 
-![An example using the "Blender Monkey"](https://github.com/[Skiiippp]/[RayTracer]/blob/main/example.ppm?raw=true)
+![A simple render](/repository/example.ppm?raw=true "A simple mesh being rendered")
 
 
 
