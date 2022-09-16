@@ -124,7 +124,7 @@ int main(){
     //World
     std::string fileName = "suzanne.obj";
     auto world = objModel(fileName);
-    auto groundMat = make_shared<metal>(color(.7, .6, .5), 0.1);
+    auto groundMat = make_shared<metal>(color(.7, .6, .5), 0.0);
     world.add(make_shared<triangle>(point3(0, 0, -100), point3(500, 0, 500), point3(-500, 0, 500),  groundMat));
 
     //Camera
