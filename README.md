@@ -4,7 +4,7 @@ New(ish) features:
 - Multithreading
 - 3D mesh support using a custom .obj file interpreter
 
-![A simple render](/example.ppm?raw=true "A simple mesh being rendered")
+![A simple render](/glassmonkey?raw=true "A demo of a 3D mesh in the ray tracer.")
 
 
 
