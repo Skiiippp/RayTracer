@@ -4,7 +4,7 @@ New(ish) features:
 - Multithreading
 - 3D mesh support using a custom .obj file interpreter
 
-![A simple render](/repository/example.ppm?raw=true "A simple mesh being rendered")
+![A simple render](/RayTracer/example.ppm?raw=true "A simple mesh being rendered")
 
 
 
