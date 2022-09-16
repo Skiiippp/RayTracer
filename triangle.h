@@ -39,7 +39,9 @@ bool triangle::hit(const ray& r, double tMin, double tMax, hitRecord& rec) const
 
 
     point3 Q = r.at(t);
-    if(dotProduct(crossProduct(B-A, Q-A), n) >= 0 && dotProduct(crossProduct(A-C, Q-C), n) >= 0 && dotProduct(crossProduct(C-B, Q-B), n) >= 0){
+    if((dotProduct(crossProduct(B-A, Q-A), n) >= 0 && dotProduct(crossProduct(A-C, Q-C), n) >= 0 && dotProduct(crossProduct(C-B, Q-B), n) >= 0) 
+    /*|| (dotProduct(crossProduct(B-A, Q-A), n) < 0 && dotProduct(crossProduct(A-C, Q-C), n) < 0 && dotProduct(crossProduct(C-B, Q-B), n) < 0)*/){  
+        //Will probobly want to delete this second condition due to performance reasons at some point
         
         rec.t = t;
         rec.p = Q;
