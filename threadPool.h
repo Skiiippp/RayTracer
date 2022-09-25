@@ -8,7 +8,7 @@
 #include <condition_variable>
 #include <queue>
 
-//Code from https://stackoverflow.com/questions/15752659/thread-pooling-in-c11
+//See https://stackoverflow.com/questions/15752659/thread-pooling-in-c11
 
 class threadPool{
     public:

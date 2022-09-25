@@ -13,12 +13,12 @@
 #include <stdlib.h>
 
 void triangulator(std::vector<point3>& vertices, hittableList& mesh){
-    auto material2 = make_shared<metal>(color(.7, .6, .5), 0.0); //temporary for testing purposes
+    auto material0 = make_shared<lambertian>(color(.5, .5, .5));    //shoudl be changed
     int i = 0;
     int j = 1;
     int k = 2;
     while(k < vertices.size()){
-        mesh.add(make_shared<triangle>(vertices[i], vertices[j], vertices[k], material2));
+        mesh.add(make_shared<triangle>(vertices[i], vertices[j], vertices[k], material0));
         j++;
         k++;
     }

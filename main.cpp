@@ -37,35 +37,6 @@ color rayColor(const ray& r, hittable& world, int depth){
 
 }
 
-hittableList threadTest(){
-    hittableList world;
-
-    auto groundMaterial = make_shared<lambertian>(color(.5, .5, .5));
-    world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, groundMaterial));
-
-    auto material1 = make_shared<dielectric>(1.5);
-    world.add(make_shared<sphere>(point3(0, 1, 2), 1.0, material1));
-
-    auto material2 = make_shared<lambertian>(color(.4, .2, .1));
-    world.add(make_shared<sphere>(point3(4, 1, -1), 1.0, material2));
-
-    auto material3 = make_shared<metal>(color(.7, .6, .5), 0.0);
-    world.add(make_shared<sphere>(point3(-3.5, 1, -1), 1.0, material3));
-    
-
-    return world;
-}
-
-hittableList triangleTest(){
-    hittableList world;
-
-    auto material = make_shared<metal>(color(.7, .6, .5), 0.0);
-    world.add(make_shared<triangle>(point3(-.1, .1, -1), point3(.1, .1, -1), point3(0, 0, -1),  material));
-    world.add(make_shared<sphere>(point3(0, .1, 1), .1, material));
-    return world;
-
-}
-
 
 
 camera fancyCam(){
@@ -89,15 +60,15 @@ camera testCam(){
     return camera(lookfrom, lookat, vup, 20, aspectRatio, aperture, distToFocus);
 }
 
-
-
-
-//Multithread code - only support image width of 1200, height of 800 b/c of array
-
+hittableList testWorld(){
+    std::string fileName = "suzanne.obj";
+    auto world = objModel(fileName);
+    auto mat = make_shared<lambertian>(color(.5, .5, .5));
+    world.add(make_shared<triangle>(point3(0, 0, -100), point3(500, 0, 500), point3(-500, 0, 500),  mat));
+    return world;
+}
 
 void render(int imageWidth, int imageHeight, int maxDepth, camera& cam, hittableList& world, color* image){
-    //unsigned int seed;
-    //rand_r(&seed);
     for(int j = imageHeight-1; j >= 0; j--){
         for(int i = 0; i < imageWidth; i++){   
             auto u = (i + randomDouble()) / (imageWidth - 1);
@@ -109,23 +80,28 @@ void render(int imageWidth, int imageHeight, int maxDepth, camera& cam, hittable
     }
 }
 
-
+void lineRender(int imageWidth, int imageHeight, int maxDepth, camera& cam, hittableList& world, color* image, int currentHeight){
+    for(int i = 0; i < imageWidth; i++){   
+            auto u = (i + randomDouble()) / (imageWidth - 1);
+            auto v = (currentHeight + randomDouble()) / (imageHeight - 1);
+            ray r = cam.getRay(u, v);
+            color pixelColor = rayColor(r, world, maxDepth);
+            image[currentHeight * imageWidth + i] += pixelColor;
+        } 
+}
 
 int main(){
 
     //Image
     const auto aspectRatio = 3.0/2.0;
-    const int imageWidth = 800;
+    const int imageWidth = 100;
     const int imageHeight = static_cast<int>(imageWidth / aspectRatio);
-    int samplesPerPixel = 50;
+    int samplesPerPixel = 1;
     int maxDepth = 50;
 
     
     //World
-    std::string fileName = "suzanne.obj";
-    auto world = objModel(fileName);
-    auto groundMat = make_shared<metal>(color(.7, .6, .5), 0.0);
-    world.add(make_shared<triangle>(point3(0, 0, -100), point3(500, 0, 500), point3(-500, 0, 500),  groundMat));
+    auto world = testWorld();
 
     //Camera
     camera cam = testCam();
@@ -143,12 +119,21 @@ int main(){
         //Multithreading
     threadPool pool;
     pool.start();
+    
+    /*
     for(unsigned int i = 0; i < samplesPerPixel; i++){
         std::function<void()> job = [&]() { render(imageWidth, imageHeight, maxDepth, cam, world, image); };
         pool.queueJob(job);
+    }*/
+
+    for(int i = imageHeight - 1; i > 0; i--){
+        std::function<void()> job = [&]() { lineRender(imageWidth, imageHeight, maxDepth, cam, world, image, i); };
+        pool.queueJob(job);
     }
+
+   
     while(pool.busy()){
-        std::cerr << "\rSamples remaining: " << pool.getQueueSize() + 7 << ' ' << std::fflush;
+        std::cerr << "\rLines remaining in queue: " << pool.getQueueSize() << ' ' << std::fflush;
     }
     pool.stop();
     
