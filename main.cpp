@@ -81,13 +81,17 @@ void render(int imageWidth, int imageHeight, int maxDepth, camera& cam, hittable
 }
 
 void lineRender(int imageWidth, int imageHeight, int maxDepth, camera& cam, hittableList& world, color* image, int currentHeight){
-    for(int i = 0; i < imageWidth; i++){   
+    std::cerr << currentHeight << "\n";    //Always 0?
+    for(int i = 0; i < imageWidth; i++){
             auto u = (i + randomDouble()) / (imageWidth - 1);
             auto v = (currentHeight + randomDouble()) / (imageHeight - 1);
             ray r = cam.getRay(u, v);
             color pixelColor = rayColor(r, world, maxDepth);
-            image[currentHeight * imageWidth + i] += pixelColor;
+
+            image[currentHeight * imageWidth + i] += pixelColor; 
+            
         } 
+        
 }
 
 int main(){
@@ -117,26 +121,43 @@ int main(){
     std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
 
         //Multithreading
+
+    /*
     threadPool pool;
     pool.start();
+
     
-    /*
     for(unsigned int i = 0; i < samplesPerPixel; i++){
         std::function<void()> job = [&]() { render(imageWidth, imageHeight, maxDepth, cam, world, image); };
         pool.queueJob(job);
-    }*/
-
-    for(int i = imageHeight - 1; i > 0; i--){
-        std::function<void()> job = [&]() { lineRender(imageWidth, imageHeight, maxDepth, cam, world, image, i); };
-        pool.queueJob(job);
     }
-
-   
+    
     while(pool.busy()){
         std::cerr << "\rLines remaining in queue: " << pool.getQueueSize() << ' ' << std::fflush;
     }
     pool.stop();
+    */
+
+    //Sequential test -- Errors were not based on multithreading
+
+    std::vector<std::function<void()>> jobList;
+
+    for(int i = imageHeight - 1; i >= 0; i--){
+        std::function<void()> job = [&]() { lineRender(imageWidth, imageHeight, maxDepth, cam, world, image, i); };
+        jobList.push_back(job);
+    }
+
+
+    int count = 0;
+   
+    for(std::function<void()> job : jobList){  
+        job();
+        count++;
+    }
+
     
+    
+
     for(int j = imageHeight-1; j >= 0; j--){
         for(int i = 0; i < imageWidth; i++){
             writeColor(std::cout, image[j * imageWidth + i], samplesPerPixel);
