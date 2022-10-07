@@ -13,7 +13,7 @@
 #include <stdlib.h>
 
 void triangulator(std::vector<point3>& vertices, hittableList& mesh){
-    auto material0 = make_shared<lambertian>(color(.5, .5, .5));    //shoudl be changed
+    auto material0 = make_shared<lambertian>(color(.5, .5, .5));    //should be changed
     int i = 0;
     int j = 1;
     int k = 2;
