@@ -1,5 +1,5 @@
 # RayTracer
-A ray tracer build on the foundation of the [ray tracing in one weekend](https://raytracing.github.io/) tutorial. The runner script should work on debian based systems.<br/><br/>
+A ray tracer build on the foundation of the [ray tracing in one weekend](https://raytracing.github.io/) tutorial.<br/><br/>
 Interesting features:
 - Multithreading
 - 3D mesh support using a custom .obj file interpreter. Example:
